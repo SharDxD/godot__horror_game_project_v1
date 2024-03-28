@@ -1,0 +1,66 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxt4mjr2mea0u"]
+
+[ext_resource type="Script" path="res://main_menu.gd" id="1_sv4ky"]
+[ext_resource type="AudioStream" uid="uid://bouppo6gc66q7" path="res://Sounds/MainMenuSound.ogg" id="2_d776r"]
+[ext_resource type="Texture2D" uid="uid://cu3d1rwddwi4r" path="res://materials/background_mm_resized.png" id="2_f3vrg"]
+
+[node name="main_menu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 5.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_sv4ky")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_as_relative = false
+layout_mode = 0
+offset_left = -18.0
+offset_top = -10.0
+offset_right = 1307.0
+offset_bottom = 747.0
+texture = ExtResource("2_f3vrg")
+
+[node name="start_game" type="Button" parent="."]
+layout_mode = 0
+offset_left = 108.0
+offset_top = 455.0
+offset_right = 290.0
+offset_bottom = 520.0
+text = "Start the game"
+
+[node name="end_game" type="Button" parent="."]
+layout_mode = 0
+offset_left = 108.0
+offset_top = 530.0
+offset_right = 191.0
+offset_bottom = 594.0
+text = "Exit"
+
+[node name="music_switch" type="CheckButton" parent="."]
+layout_mode = 0
+offset_left = 200.0
+offset_top = 525.0
+offset_right = 294.0
+offset_bottom = 599.0
+text = "Music"
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(89, -25)
+stream = ExtResource("2_d776r")
+
+[node name="fullscreen_switch" type="CheckButton" parent="."]
+layout_mode = 0
+offset_left = 109.0
+offset_top = 600.0
+offset_right = 295.0
+offset_bottom = 653.0
+text = "Full screen mode"
+
+[connection signal="pressed" from="start_game" to="." method="_on_start_game_pressed"]
+[connection signal="pressed" from="end_game" to="." method="_on_end_game_pressed"]
+[connection signal="toggled" from="music_switch" to="." method="_on_music_switch_toggled"]
+[connection signal="toggled" from="fullscreen_switch" to="." method="_on_fullscreen_switch_toggled"]
