@@ -1,0 +1,83 @@
+[gd_scene load_steps=5 format=3 uid="uid://disyx0xvp6pxl"]
+
+[ext_resource type="Script" path="res://scripts/pause.gd" id="1_3y7tx"]
+[ext_resource type="Shader" path="res://shaders/pause.gdshader" id="2_emhb8"]
+[ext_resource type="AudioStream" uid="uid://bouppo6gc66q7" path="res://Sounds/MainMenuSound.ogg" id="3_3qvqw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ti8bj"]
+render_priority = 0
+shader = ExtResource("2_emhb8")
+shader_parameter/amount = 2.715
+
+[node name="Pause" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 286.0
+offset_top = 179.0
+offset_right = -14.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3y7tx")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_ti8bj")
+layout_mode = 0
+offset_left = -300.0
+offset_top = -300.0
+offset_right = 2200.0
+offset_bottom = 1700.0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 235.0
+offset_bottom = 76.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Quit" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Quit"
+
+[node name="Resume" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Resume"
+
+[node name="menu" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Main menu"
+
+[node name="level2" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Level 1"
+
+[node name="level1" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Tutorial"
+
+[node name="music_switch" type="CheckButton" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Music"
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(89, -25)
+stream = ExtResource("3_3qvqw")
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/menu" to="." method="_on_menu_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/level2" to="." method="_on_level_2_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/level1" to="." method="_on_level_1_pressed"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/music_switch" to="." method="_on_music_switch_button_down"]
+[connection signal="button_up" from="MarginContainer/VBoxContainer/music_switch" to="." method="_on_music_switch_button_up"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/music_switch" to="." method="_on_music_switch_pressed"]

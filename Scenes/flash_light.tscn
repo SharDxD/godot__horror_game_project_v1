@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bmxj4dva4kljx"]
+
+[ext_resource type="PackedScene" uid="uid://cyu50x13lsb1" path="res://Items/FlashLight_copy/FlashLight.glb" id="1_nih2s"]
+[ext_resource type="Script" path="res://scripts/flash_light.gd" id="2_p6jof"]
+
+[sub_resource type="Curve" id="Curve_t13vw"]
+max_value = 10.0
+_data = [Vector2(0, 9.43161), 0.0, 1.85405, 0, 0, Vector2(0.583942, 9.7564), -2.70161, -2.70161, 0, 0, Vector2(0.682482, 8.13242), -10.0119, -10.0119, 0, 0, Vector2(0.846715, 8.86321), -7.6222, -7.6222, 0, 0, Vector2(0.886861, 3.86946), -3.26057, -3.26057, 0, 0, Vector2(0.916058, 5.57464), -3.51293, -3.51293, 0, 0, Vector2(0.930657, 2.55014), -3.94924, -3.94924, 0, 0, Vector2(0.967153, 5.53009), -50.4004, -50.4004, 0, 0, Vector2(1, 0.196127), 0.0, 0.0, 0, 0]
+point_count = 9
+
+[node name="FlashLight" instance=ExtResource("1_nih2s")]
+script = ExtResource("2_p6jof")
+energy_curve = SubResource("Curve_t13vw")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.161206, 0)
+light_color = Color(1, 0.992157, 0.729412, 1)
+light_energy = 3.23
+light_indirect_energy = 5.111
+light_volumetric_fog_energy = 4.889
+spot_range = 14.142
+
+[node name="Timer" type="Timer" parent="." index="2"]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

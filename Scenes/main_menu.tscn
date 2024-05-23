@@ -30,7 +30,7 @@ offset_left = 108.0
 offset_top = 455.0
 offset_right = 290.0
 offset_bottom = 520.0
-text = "Start the game"
+text = "Start the tutorial"
 
 [node name="end_game" type="Button" parent="."]
 layout_mode = 0
@@ -60,7 +60,15 @@ offset_right = 295.0
 offset_bottom = 653.0
 text = "Full screen mode"
 
+[node name="level2" type="Button" parent="."]
+offset_left = 108.0
+offset_top = 380.0
+offset_right = 290.0
+offset_bottom = 445.0
+text = "Start the game"
+
 [connection signal="pressed" from="start_game" to="." method="_on_start_game_pressed"]
 [connection signal="pressed" from="end_game" to="." method="_on_end_game_pressed"]
 [connection signal="toggled" from="music_switch" to="." method="_on_music_switch_toggled"]
 [connection signal="toggled" from="fullscreen_switch" to="." method="_on_fullscreen_switch_toggled"]
+[connection signal="pressed" from="level2" to="." method="_on_level_2_pressed"]

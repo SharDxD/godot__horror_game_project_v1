@@ -7,10 +7,51 @@ const JUMP_VELOCITY = 4.5
 var crouched : bool
 var flash : bool
 
-# Get the gravity from the project settings to be synced with RigidBody nodes.
+@onready var ray_cast: RayCast3D = $Camera3D/RayCast3D
+@onready var interaction_label: Label = $CenterContainer/Label
+@onready var pause_menu: Control = $Pause
+
 var gravity = 10
 var mouse_sensitivity = 0.001
 var camera_rotation_limit = 70.0
+var paused = false
+
+func pauseMenu():
+	if paused:
+		pause_menu.hide()
+		get_tree().paused = false
+		#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		Engine.time_scale = 1
+	else:
+		pause_menu.show()
+		get_tree().paused = true
+		#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		Engine.time_scale = 0
+	paused = !paused
+	#if paused:
+		#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		#pause_menu.hide()
+		#get_tree().paused = false
+#
+	#else:
+		#Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		#get_tree().paused = true
+		#pause_menu.show()
+
+
+
+func _ready():
+	ray_cast.add_exception(self)
+	
+func _process(delta):
+	if Input.is_action_just_pressed("pause"):
+		pauseMenu()
+	if ray_cast.is_colliding():
+		if not interaction_label.visible:
+			interaction_label.visible = true
+	else:
+		if interaction_label.visible:
+			interaction_label.visible = false
 
 func _rotate_player_and_camera(relative_motion):
 	# Rotate player left/right
@@ -25,6 +66,10 @@ func _rotate_player_and_camera(relative_motion):
 	$Camera3D.rotation_degrees = camera_rotation
 
 func _input(event):
+	if event.is_action_pressed("Interact") and ray_cast.is_colliding():
+		if ray_cast.get_collider() is InteractionBase:
+			ray_cast.get_collider().interact()
+
 	if event is InputEventMouseMotion:
 		_rotate_player_and_camera(event.relative)
 
@@ -57,9 +102,9 @@ func _physics_process(delta):
 				
 	if Input.is_action_just_pressed("flashlight"):
 		if flash:
-			$AnimationPlayer.play("offflashlight")
+			$AnimationPlayer.play("flashlight_v2")
 		else:
-			$AnimationPlayer.play("onflashlight")
+			$AnimationPlayer.play("flashlight_v2_reverse")
 		flash = !flash
 		
 	if direction:

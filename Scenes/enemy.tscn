@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://d256fmfg3y545"]
+
+[ext_resource type="PackedScene" uid="uid://dk36mf35vdcru" path="res://models/InteractionTutorialModels/glb/creep.glb" id="1_555vn"]
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="1_qqks1"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_gxgyx"]
+radius = 1.2187
+height = 3.53203
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hc1bl"]
+radius = 1.2187
+height = 3.53203
+
+[node name="enemy" type="CharacterBody3D"]
+script = ExtResource("1_qqks1")
+
+[node name="Monster" parent="." instance=ExtResource("1_555vn")]
+transform = Transform3D(0.04, 0, 0, 0, 0.036107, 0, 0, 0, 0.04, 0, 1.3, 0)
+
+[node name="CollisionShape3D_uncrouched" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.692148, 0, 0, 0, 0.692148, 0, 0, 0, 0.692148, 0, 1.3, 0)
+shape = SubResource("CapsuleShape3D_gxgyx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+skeleton = NodePath("")
+
+[node name="Monster2" parent="." instance=ExtResource("1_555vn")]
+transform = Transform3D(0.04, 0, 0, 0, 0.036107, 0, 0, 0, 0.04, 0, 1.3, 0)
+
+[node name="CollisionShape3D_uncrouched2" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.692148, 0, 0, 0, 0.692148, 0, 0, 0, 0.692148, 0, 1.3, 0)
+shape = SubResource("CapsuleShape3D_hc1bl")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+skeleton = NodePath("")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+target_desired_distance = 2.0
+
+[node name="Timer" type="Timer" parent="."]

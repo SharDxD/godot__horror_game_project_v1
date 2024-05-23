@@ -13,6 +13,7 @@ grow_vertical = 2
 script = ExtResource("1_ahqdg")
 
 [node name="start_game" type="Button" parent="."]
+layout_mode = 0
 offset_left = 102.0
 offset_top = 98.0
 offset_right = 284.0
@@ -20,6 +21,7 @@ offset_bottom = 163.0
 text = "Start the game"
 
 [node name="end_game" type="Button" parent="."]
+layout_mode = 0
 offset_left = 102.0
 offset_top = 173.0
 offset_right = 185.0
@@ -27,6 +29,7 @@ offset_bottom = 237.0
 text = "Exit"
 
 [node name="music_switch" type="CheckButton" parent="."]
+layout_mode = 0
 offset_left = 194.0
 offset_top = 168.0
 offset_right = 288.0
@@ -38,6 +41,7 @@ position = Vector2(83, -382)
 stream = ExtResource("2_kwj0a")
 
 [node name="fullscreen_switch" type="CheckButton" parent="."]
+layout_mode = 0
 offset_left = 103.0
 offset_top = 243.0
 offset_right = 289.0

@@ -1,9 +1,39 @@
-[gd_scene load_steps=25 format=3 uid="uid://c26i3cmwyh7fd"]
+[gd_scene load_steps=35 format=3 uid="uid://c26i3cmwyh7fd"]
 
 [ext_resource type="Material" uid="uid://bte7uh4r6pb7a" path="res://materials/brickOrange/brick.tres" id="1_1rxcj"]
 [ext_resource type="Texture2D" uid="uid://pqtbmktib2ib" path="res://materials/floor.png" id="1_8b8kq"]
 [ext_resource type="Texture2D" uid="uid://cwnoyo4vvkjje" path="res://materials/scratched_wall.png" id="1_ge2u0"]
 [ext_resource type="PackedScene" uid="uid://ccu1nhuue1qi" path="res://Scenes/basic_character_3d.tscn" id="2_k0nya"]
+[ext_resource type="PackedScene" uid="uid://d256fmfg3y545" path="res://Scenes/enemy.tscn" id="2_v6wtt"]
+[ext_resource type="Script" path="res://scripts/enemy.gd" id="3_bkhnj"]
+[ext_resource type="MeshLibrary" uid="uid://btkuewq3yceuy" path="res://models/tileset.tres" id="5_mt0cs"]
+[ext_resource type="PackedScene" uid="uid://hrxmjffcoyph" path="res://Scenes/power_cell.tscn" id="6_ihuyn"]
+[ext_resource type="Shader" path="res://shaders/camcorder_shader.gdshader" id="7_id628"]
+
+[sub_resource type="Environment" id="Environment_dq7se"]
+background_mode = 2
+background_energy_multiplier = 0.18
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_k67ke"]
+radius = 0.50471
+height = 1.81683
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_yvyj7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rshaq"]
+render_priority = 0
+shader = ExtResource("7_id628")
+shader_parameter/NIGHT_VISION_COLOR = Color(0, 0.803922, 0.760784, 1)
+shader_parameter/ENABLE_NIGHT_VISION = true
+shader_parameter/ENABLE_NOISE = true
+shader_parameter/strength = 9.01
+
+[sub_resource type="QuadMesh" id="QuadMesh_wvr7c"]
+material = SubResource("ShaderMaterial_rshaq")
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_j78a5"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_7tssu"]
 size = Vector3(2, 0.05, 2)
@@ -49,92 +79,129 @@ albedo_texture = ExtResource("1_ge2u0")
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_tmtd1"]
 
-[sub_resource type="Environment" id="Environment_u8noc"]
-
 [node name="Node3D" type="Node3D"]
 
-[node name="MeshFloor" type="MeshInstance3D" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_dq7se")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(0.831227, 0, -0.555933, 0, 1, 0, 0.555933, 0, 0.831227, 1.35339, 12.9671, 10.575)
+light_energy = 0.05
+directional_shadow_mode = 1
+
+[node name="Character_basic" parent="." instance=ExtResource("2_k0nya")]
+
+[node name="enemy" parent="." instance=ExtResource("2_v6wtt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.49108, 0, 5.67808)
+script = ExtResource("3_bkhnj")
+
+[node name="CollisionShape3D_uncrouched3" type="CollisionShape3D" parent="enemy"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_k67ke")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="enemy"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_yvyj7")
+skeleton = NodePath("")
+
+[node name="NavigationAgent3D2" type="NavigationAgent3D" parent="enemy"]
+
+[node name="Timer2" type="Timer" parent="enemy"]
+
+[node name="GridMap" type="GridMap" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+mesh_library = ExtResource("5_mt0cs")
+data = {
+"cells": PackedInt32Array(3, 65533, 1)
+}
+
+[node name="power_cell" parent="." instance=ExtResource("6_ihuyn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.87014, 0.678284, 0)
+
+[node name="NightVisionMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1516, -6.54098)
+visible = false
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_wvr7c")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_j78a5")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.94998, 2.15606, 0)
+use_collision = true
+size = Vector3(7.55075, 1.74802, 1)
+
+[node name="MeshFloor" type="MeshInstance3D" parent="NavigationRegion3D"]
 process_physics_priority = 1
 transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, -0.3, 0)
 mesh = SubResource("BoxMesh_7tssu")
+skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_tq0co")
 
-[node name="MeshWall1" type="MeshInstance3D" parent="MeshFloor"]
+[node name="MeshWall1" type="MeshInstance3D" parent="NavigationRegion3D/MeshFloor"]
 transform = Transform3D(0.01, 0, 0, 0, 1, 0, 0, 0, 2, 1, 0.5, 0)
 material_override = SubResource("StandardMaterial3D_obc2b")
 material_overlay = SubResource("StandardMaterial3D_tmwja")
 mesh = SubResource("BoxMesh_xnydy")
 
-[node name="StaticBodyWall1" type="StaticBody3D" parent="MeshFloor/MeshWall1"]
+[node name="StaticBodyWall1" type="StaticBody3D" parent="NavigationRegion3D/MeshFloor/MeshWall1"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshFloor/MeshWall1/StaticBodyWall1"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshFloor/MeshWall1/StaticBodyWall1"]
 shape = SubResource("BoxShape3D_s1tsl")
 
-[node name="MeshWall2" type="MeshInstance3D" parent="MeshFloor"]
+[node name="MeshWall2" type="MeshInstance3D" parent="NavigationRegion3D/MeshFloor"]
 transform = Transform3D(0.01, 0, 0, 0, 1, 0, 0, 0, 2, -1, 0.5, 0)
 material_override = SubResource("StandardMaterial3D_15gdv")
 material_overlay = SubResource("StandardMaterial3D_44s3p")
 mesh = SubResource("BoxMesh_xnydy")
 
-[node name="StaticBodyWall2" type="StaticBody3D" parent="MeshFloor/MeshWall2"]
+[node name="StaticBodyWall2" type="StaticBody3D" parent="NavigationRegion3D/MeshFloor/MeshWall2"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshFloor/MeshWall2/StaticBodyWall2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshFloor/MeshWall2/StaticBodyWall2"]
 shape = SubResource("BoxShape3D_cgpel")
 
-[node name="MeshWall3" type="MeshInstance3D" parent="MeshFloor"]
+[node name="MeshWall3" type="MeshInstance3D" parent="NavigationRegion3D/MeshFloor"]
 transform = Transform3D(-4.37114e-10, 0, 2, 0, 1, 0, -0.01, 0, -8.74228e-08, 0, 0.5, -1)
 material_override = SubResource("StandardMaterial3D_f4s0d")
 material_overlay = SubResource("StandardMaterial3D_0d5pn")
 mesh = SubResource("BoxMesh_xnydy")
 
-[node name="StaticBodyWall3" type="StaticBody3D" parent="MeshFloor/MeshWall3"]
+[node name="StaticBodyWall3" type="StaticBody3D" parent="NavigationRegion3D/MeshFloor/MeshWall3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 1.38778e-17, 0, 1, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshFloor/MeshWall3/StaticBodyWall3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshFloor/MeshWall3/StaticBodyWall3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -1.38778e-17, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_0ap00")
 
-[node name="MeshWall4" type="MeshInstance3D" parent="MeshFloor"]
+[node name="MeshWall4" type="MeshInstance3D" parent="NavigationRegion3D/MeshFloor"]
 transform = Transform3D(-4.37114e-10, 0, 2, 0, 1, 0, -0.01, 0, -8.74228e-08, 0, 0.5, 1)
 material_override = SubResource("StandardMaterial3D_0sguy")
 material_overlay = SubResource("StandardMaterial3D_qsc5l")
 mesh = SubResource("BoxMesh_xnydy")
 surface_material_override/0 = SubResource("StandardMaterial3D_vgqur")
 
-[node name="StaticBodyWall4" type="StaticBody3D" parent="MeshFloor/MeshWall4"]
+[node name="StaticBodyWall4" type="StaticBody3D" parent="NavigationRegion3D/MeshFloor/MeshWall4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 1.38778e-17, 0, 1, 0, 0, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshFloor/MeshWall4/StaticBodyWall4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshFloor/MeshWall4/StaticBodyWall4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, -1.38778e-17, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_lqiju")
 
-[node name="MeshBox3D" type="MeshInstance3D" parent="MeshFloor"]
+[node name="MeshBox3D" type="MeshInstance3D" parent="NavigationRegion3D/MeshFloor"]
 transform = Transform3D(0.2, 0, 0, 0, 0.15, 0, 0, 0, 0.3, -0.836127, 0.15, 0.696975)
 mesh = SubResource("CylinderMesh_au80h")
 surface_material_override/0 = ExtResource("1_1rxcj")
 
-[node name="StaticBodyBox3D" type="StaticBody3D" parent="MeshFloor/MeshBox3D"]
+[node name="StaticBodyBox3D" type="StaticBody3D" parent="NavigationRegion3D/MeshFloor/MeshBox3D"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshFloor/MeshBox3D/StaticBodyBox3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshFloor/MeshBox3D/StaticBodyBox3D"]
 shape = SubResource("CylinderShape3D_ltphf")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshFloor"]
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/MeshFloor"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshFloor/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshFloor/StaticBody3D"]
 shape = SubResource("WorldBoundaryShape3D_tmtd1")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_u8noc")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(0.831227, 0, -0.555933, 0, 1, 0, 0.555933, 0, 0.831227, 1.35339, 12.9671, 10.575)
-visible = false
-light_angular_distance = 74.55
-directional_shadow_mode = 1
-
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.94998, 2.15606, 0)
-use_collision = true
-size = Vector3(7.55075, 1.74802, 1)
-
-[node name="Character_basic" parent="." instance=ExtResource("2_k0nya")]
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.11099, 0, 5.70766)

@@ -1,0 +1,191 @@
+[gd_scene load_steps=13 format=3 uid="uid://gwr7g2n2qjvg"]
+
+[ext_resource type="PackedScene" uid="uid://cyu50x13lsb1" path="res://Items/FlashLight_copy/FlashLight.glb" id="1_nih2s"]
+[ext_resource type="Script" path="res://scripts/flash_light_cam.gd" id="2_a67h7"]
+[ext_resource type="Texture2D" uid="uid://6ts1njr02f8l" path="res://materials/Camcorder Icons/rec_icon_white.png" id="3_0lvqt"]
+[ext_resource type="Shader" path="res://shaders/camcorder_shader.gdshader" id="4_ax3yb"]
+
+[sub_resource type="Animation" id="Animation_lqd31"]
+resource_name = "Decrease Energy"
+length = 20.0
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpotLight3D:light_energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(3.23, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 20)
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Ui/Energy/FlowContainer/ProgressBar:value")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 20, 20.1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [100.0, 0.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_bgh2u"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Ui/Energy/FlowContainer/ProgressBar:value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [100.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_08at8"]
+_data = {
+"Decrease Energy": SubResource("Animation_lqd31"),
+"RESET": SubResource("Animation_bgh2u")
+}
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_04qeb"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Animation" id="Animation_c74t5"]
+resource_name = "rec_animation"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../../RecIcon:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tpk13"]
+_data = {
+"rec_animation": SubResource("Animation_c74t5")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3evhq"]
+render_priority = 0
+shader = ExtResource("4_ax3yb")
+shader_parameter/NIGHT_VISION_COLOR = Color(0, 0.803922, 0.760784, 1)
+shader_parameter/ENABLE_NIGHT_VISION = false
+shader_parameter/ENABLE_NOISE = false
+shader_parameter/strength = 16.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_sxtt7"]
+material = SubResource("ShaderMaterial_3evhq")
+flip_faces = true
+size = Vector2(2, 2)
+
+[node name="FlashLight_cam" instance=ExtResource("1_nih2s")]
+script = ExtResource("2_a67h7")
+
+[node name="Cylinder" parent="." index="0"]
+visible = false
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.161206, 0)
+light_color = Color(1, 0.992157, 0.729412, 1)
+light_energy = 3.23
+light_indirect_energy = 5.111
+light_volumetric_fog_energy = 4.889
+spot_range = 14.142
+spot_angle = 65.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="2"]
+libraries = {
+"": SubResource("AnimationLibrary_08at8")
+}
+
+[node name="Ui" type="Control" parent="." index="3"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Energy" type="MarginContainer" parent="Ui" index="0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 20
+
+[node name="FlowContainer" type="FlowContainer" parent="Ui/Energy" index="0"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="Ui/Energy/FlowContainer" index="0"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "0/0"
+
+[node name="ProgressBar" type="ProgressBar" parent="Ui/Energy/FlowContainer" index="1"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_04qeb")
+value = 100.0
+show_percentage = false
+
+[node name="Recording" type="MarginContainer" parent="Ui" index="1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+
+[node name="FlowContainer" type="FlowContainer" parent="Ui/Recording" index="0"]
+layout_mode = 2
+
+[node name="RecIcon" type="TextureRect" parent="Ui/Recording/FlowContainer" index="0"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+texture = ExtResource("3_0lvqt")
+expand_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="Ui/Recording/FlowContainer" index="1"]
+layout_mode = 2
+theme_override_constants/margin_left = 35
+
+[node name="Label" type="Label" parent="Ui/Recording/FlowContainer/MarginContainer" index="0"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "00:00:00"
+
+[node name="rec_animation" type="AnimationPlayer" parent="." index="4"]
+root_node = NodePath("../Ui/Recording/FlowContainer/MarginContainer/Label")
+libraries = {
+"": SubResource("AnimationLibrary_tpk13")
+}
+speed_scale = 0.53
+
+[node name="Timer" type="Timer" parent="." index="5"]
+autostart = true
+
+[node name="NightVisionMesh" type="MeshInstance3D" parent="." index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1516, -6.54098)
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_sxtt7")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

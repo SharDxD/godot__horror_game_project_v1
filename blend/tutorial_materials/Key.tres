@@ -1,0 +1,27 @@
+[gd_resource type="Resource" load_steps=6 format=3 uid="uid://bigh3na66fs61"]
+
+[ext_resource type="Resource" uid="uid://b27d1tfkch68t" path="res://Iron.tres" id="1_hfvye"]
+[ext_resource type="Script" path="res://ItemTest2.gd" id="1_hjlou"]
+[ext_resource type="Resource" uid="uid://b458g7gs3els6" path="res://Coal.tres" id="2_0up6r"]
+
+[sub_resource type="Gradient" id="Gradient_wwxpb"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_6e74j"]
+gradient = SubResource("Gradient_wwxpb")
+
+[resource]
+script = ExtResource("1_hjlou")
+ID = 2
+Name = "Key"
+ResourcePath = "res://Key.tscn"
+Icon = SubResource("GradientTexture1D_6e74j")
+Quantity = 1
+StackSize = 2
+IsStackable = false
+Weight = 0.0
+SubItemFound = false
+DeleteItemAfterFound = false
+ItemCraftableMakeup = {
+ExtResource("1_hfvye"): 1,
+ExtResource("2_0up6r"): 1
+}
